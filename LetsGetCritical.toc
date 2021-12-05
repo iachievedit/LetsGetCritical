@@ -1,0 +1,11 @@
+## Interface: 40892
+## Version: 0.0.1
+## Title: Let's Get Critical
+## Author: iachievedit
+## Copyright:  The MIT License
+## Notes: Playin' all the crits
+## SavedVariables: LGC_AccountDB
+## SavedVariablesPerCharacter: LGC_CharacterDB
+
+LGCMain.lua
+LGCDB.lua
