@@ -15,16 +15,36 @@ LGCritical[moduleName] = module
 -- Imports
 local clearCharacterStats = LGCritical.Database.clearCharacterStats
 
+local damageTypes = {
+  RANGE_DAMAGE = {
+    title = "Range Damage"
+  },
+  RANGE_DAMAGE_CRITICAL = {
+    title = "Critical Range Damage"
+  },
+  SPELL_DAMAGE = {
+    title = "Spell Damage"
+  },
+  SPELL_DAMAGE_CRITICAL = {
+    title = "Critical Spell Damage"
+  },
+  SPELL_PERIODIC_DAMAGE = {
+    title = "Periodic Spell Damage"
+  },
+  PERIODIC_SPELL_DAMAGE_CRITICAL = {
+    title = "Critical Periodic Spell Damage"
+  }
+}
+
 SLASH_LGCRITICAL_STATS1 = "/lgcstats"
 SLASH_LGCRITICAL_CLEAR1 = "/lgcclear"
 SlashCmdList["LGCRITICAL_STATS"] = function(msg)
 
-  for k,v in pairs({"RANGE_DAMAGE", "RANGE_DAMAGE_CRITICAL","SPELL_DAMAGE","SPELL_DAMAGE_CRITICAL","SPELL_PERIODIC_DAMAGE","SPELL_PERIODIC_DAMAGE_CRITICAL"}) do
-
-    -- For now this is ugly, we need to have nice titles    
-    damageFrame:AddMessage(v)
-    if LGC_CharacterDB[v] then
-      for key, value in pairs(LGC_CharacterDB[v]) do
+  for k,v in pairs(damageTypes) do
+    damageTypeTitle = v.title
+    damageFrame:AddMessage(damageTypeTitle, 1.0, 0.0, 0.0)
+    if LGC_CharacterDB[k] then
+      for key, value in pairs(LGC_CharacterDB[k]) do
         dmgString = key..":  "..value
         damageFrame:AddMessage(dmgString)
       end
@@ -46,10 +66,11 @@ local CRITICAL      = 21
 
 
 local eventFrame = CreateFrame("Frame", "LGC_Frame")
-local damageFrame = CreateFrame("MessageFrame", "LGC_Message_Frame", UIParent)
+
+damageFrame = CreateFrame("MessageFrame", "LGC_Message_Frame", UIParent)
 
 -- Eventually we need to allow this to move around
-damageFrame:SetHeight(120)
+damageFrame:SetHeight(240)
 damageFrame:SetWidth(240)
 damageFrame:SetPoint("BOTTOMLEFT", UIParent, 0, 400)
 damageFrame:SetFontObject("GameFontNormal")
