@@ -1,24 +1,40 @@
--------------------------------------------------------------------------------
--- Title:  Let's Get Critical Main
--- Author: iachievedit
--------------------------------------------------------------------------------
+--[[
+  Let's Get Critical
+
+  Copyright 2021 iAchieved.it LLC
+
+]]--
 
 local addonName, addon = ...
 local LGCritical = addon
 
+local module = {}
+local moduleName = "Main"
+LGCritical[moduleName] = module
+
+-- Imports
+local clearCharacterStats = LGCritical.Database.clearCharacterStats
+
 SLASH_LGCRITICAL_STATS1 = "/lgcstats"
 SLASH_LGCRITICAL_CLEAR1 = "/lgcclear"
 SlashCmdList["LGCRITICAL_STATS"] = function(msg)
-  for key, value in pairs(LGC_CharacterDB.spellDamage) do
-    print(key, value)
+
+  for k,v in pairs({"RANGE_DAMAGE", "RANGE_DAMAGE_CRITICAL","SPELL_DAMAGE","SPELL_DAMAGE_CRITICAL","SPELL_PERIODIC_DAMAGE","SPELL_PERIODIC_DAMAGE_CRITICAL"}) do
+
+    -- For now this is ugly, we need to have nice titles    
+    damageFrame:AddMessage(v)
+    if LGC_CharacterDB[v] then
+      for key, value in pairs(LGC_CharacterDB[v]) do
+        dmgString = key..":  "..value
+        damageFrame:AddMessage(dmgString)
+      end
+    end
   end
 end
 
 SlashCmdList["LGCRITICAL_CLEAR"] = function(msg)
-
-  print("clear")
-  --LGCritical["Database"].SetDefaults()
-
+  print("Clearing character stats")
+  clearCharacterStats()
 end
 
 local SPELL_DAMAGE  = 2
@@ -30,28 +46,26 @@ local CRITICAL      = 21
 
 
 local eventFrame = CreateFrame("Frame", "LGC_Frame")
+local damageFrame = CreateFrame("MessageFrame", "LGC_Message_Frame", UIParent)
+
+-- Eventually we need to allow this to move around
+damageFrame:SetHeight(120)
+damageFrame:SetWidth(240)
+damageFrame:SetPoint("BOTTOMLEFT", UIParent, 0, 400)
+damageFrame:SetFontObject("GameFontNormal")
+damageFrame:SetMovable(true)
+damageFrame:Show()
+
 local playerGUID = UnitGUID("player")
 
+eventFrame:Show()
 eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-
-function LGCritical:handleRangeDamage(eventInfo)
-  local damageAmount = eventInfo[DAMAGE_AMOUNT]
-  --print("handleRangeDamage:  "..damageAmount)
-end
-
-function LGCritical:handleSpellPeriodicDamage(eventInfo)
-  local damageAmount = eventInfo[DAMAGE_AMOUNT]
-  local spellName    = eventInfo[SPELL_NAME]
-  --print("handleSpellPeriodicDamage:  "..damageAmount.." from "..spellName)
-end
 
 local function eventHandler(self, event, ...)
 
   local eventInfo = {CombatLogGetCurrentEventInfo()}
-  local type = eventInfo[SPELL_DAMAGE]
+  local type       = eventInfo[SPELL_DAMAGE]
   local sourceGUID = eventInfo[SOURCE_GUID]
-
-  --print(type)
 
   if (event == "COMBAT_LOG_EVENT_UNFILTERED") then
 
@@ -60,58 +74,55 @@ local function eventHandler(self, event, ...)
       return
     end
 
-    if (type == "RANGE_DAMAGE") then
-      LGCritical:handleRangeDamage(eventInfo)
-    end
+    if (type == "RANGE_DAMAGE") or (type == "SPELL_DAMAGE") or (type == "SPELL_PERIODIC_DAMAGE") then
 
-    if (type == "SPELL_PERIODIC_DAMAGE") then
-      LGCritical:handleSpellPeriodicDamage(eventInfo)
-    end
-
-    if (type == "SPELL_DAMAGE") then
-
-      local spellId   = eventInfo[SPELL_ID]
-      local spellName = eventInfo[SPELL_NAME]
-      local critical = eventInfo[CRITICAL]
-      local damageAmount = eventInfo[DAMAGE_AMOUNT]
-
---      local spellId, spellName, spellSchool = select(12, eventInfo);
---      local amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(15, ...);
-
-
-
-      -- DEFAULT_CHAT_FRAME:AddMessage(spellName)
-
-      if (critical) then
-        DEFAULT_CHAT_FRAME:AddMessage(spellName.." critical for "..damageAmount)
-
-        if not LGC_CharacterDB.critSpellDamage[spellName] then
-          print("New critical record for "..spellName)
-          LGC_CharacterDB.critSpellDamage[spellName] = damageAmount
-          return
-        end
-
-        if (damageAmount > LGC_CharacterDB.critSpellDamage[spellName]) then
-          print("New critical record for "..spellName.."!")
-          LGC_CharacterDB.critSpellDamage[spellName] = damageAmount
-        end
-      else
-        if not LGC_CharacterDB.spellDamage[spellName] then
-          print("New record for "..spellName)
-          LGC_CharacterDB.spellDamage[spellName] = damageAmount
-          return
-        end
-
-        if (damageAmount > LGC_CharacterDB.spellDamage[spellName]) then
-          print("New record for "..spellName.."!")
-          LGC_CharacterDB.spellDamage[spellName] = damageAmount
-        end
+      local critTableKey = type.."_CRITICAL"
+      if not LGC_CharacterDB[critTableKey] then
+        LGC_CharacterDB[critTableKey] = {}
       end
+      if not LGC_CharacterDB[type] then
+        LGC_CharacterDB[type] = {}
+      end
+
+      local damageAmount = eventInfo[DAMAGE_AMOUNT]
+      local critical     = eventInfo[CRITICAL]
+      local spellName    = eventInfo[SPELL_NAME]
+
+      -- Is this a crit?
+      if (critical) then
+
+        damageFrame:AddMessage("Let's Get Critical!", 1.0, 0.0, 0.0, 53, 5)
+        PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\Yo.mp3")
+
+        if not LGC_CharacterDB[critTableKey][spellName] then
+          damageFrame:AddMessage("First critical record of "..damageAmount.." for "..spellName.."!")
+          LGC_CharacterDB[critTableKey][spellName] = damageAmount
+          return
+        end
+
+        -- Otherwise, we have a record, see if it's broken
+        if (damageAmount > LGC_CharacterDB[critTableKey][spellName]) then
+          damageFrame:AddMessage("New critical record of "..damageAmount.." for "..spellName.."!")
+          LGC_CharacterDB[critTableKey][spellName] = damageAmount
+        end
+      else -- Not critical
+        if not LGC_CharacterDB[type][spellName] then
+          damageFrame:AddMessage("First damage record ("..damageAmount..") for "..spellName)
+          LGC_CharacterDB[type][spellName] = damageAmount
+          return
+        end
+
+        -- Otherwise, we have a record, see if it's broken
+        if damageAmount > LGC_CharacterDB[type][spellName] then
+          damageFrame:AddMessage("New damage record ("..damageAmount..") for "..spellName.."!")
+          LGC_CharacterDB[type][spellName] = damageAmount
+        end
+      end 
     end
   end
 end
 
 eventFrame:SetScript("OnEvent", eventHandler)
 
-print("Let's Get Critical!")
+damageFrame:AddMessage("Let's Go!", 1.0, 0.0, 0.0, 53, 5)
 

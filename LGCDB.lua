@@ -24,31 +24,26 @@ function LGCritical:PLAYER_LOGIN()
 
     self:SetDefaults()
 
-    LGC_AccountDB.loginCount = LGC_AccountDB.loginCount + 1  
-    LGC_CharacterDB.loginCount = LGC_CharacterDB.loginCount + 1
+    --LGC_AccountDB.loginCount = LGC_AccountDB.loginCount + 1  
+    --LGC_CharacterDB.loginCount = LGC_CharacterDB.loginCount + 1
 
-    print("You've logged in "..LGC_AccountDB.loginCount.." times")
-    print(UnitName("Player").." logged in "..LGC_CharacterDB.loginCount.." times")
+    --print("You've logged in "..LGC_AccountDB.loginCount.." times")
+    --print(UnitName("Player").." logged in "..LGC_CharacterDB.loginCount.." times")
 end
 
 function LGCritical:SetDefaults()
-
-  print("SetDefaults")
 
   if not LGC_AccountDB then 
   	LGC_AccountDB = {
       loginCount = 0
     }
-    print("Global Initialized")
   end
 
   if not LGC_CharacterDB then 
-    LGC_CharacterDB = {
-      loginCount = 0
-    }
-    print("Character Initialized")
+    LGC_CharacterDB = {}
   end
 
+--[[
   if not LGC_CharacterDB.rangeDamage then
     LGC_CharacterDB.rangeDamage = {}
   end
@@ -60,5 +55,11 @@ function LGCritical:SetDefaults()
   if not LGC_CharacterDB.critSpellDamage then
     LGC_CharacterDB.critSpellDamage = {}
   end
+--]]
 end
 
+function clearCharacterStats()
+  LGC_CharacterDB = {}
+end
+
+module.clearCharacterStats = clearCharacterStats

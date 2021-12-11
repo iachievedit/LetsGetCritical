@@ -7,5 +7,5 @@
 ## SavedVariables: LGC_AccountDB
 ## SavedVariablesPerCharacter: LGC_CharacterDB
 
-LGCMain.lua
 LGCDB.lua
+LGCMain.lua
