@@ -21,18 +21,10 @@ frame:SetScript("OnEvent", function(this, event, ...)
 end)
 
 function LGCritical:PLAYER_LOGIN()
-
     self:SetDefaults()
-
-    --LGC_AccountDB.loginCount = LGC_AccountDB.loginCount + 1  
-    --LGC_CharacterDB.loginCount = LGC_CharacterDB.loginCount + 1
-
-    --print("You've logged in "..LGC_AccountDB.loginCount.." times")
-    --print(UnitName("Player").." logged in "..LGC_CharacterDB.loginCount.." times")
 end
 
 function LGCritical:SetDefaults()
-
   if not LGC_AccountDB then 
   	LGC_AccountDB = {
       loginCount = 0
@@ -42,20 +34,6 @@ function LGCritical:SetDefaults()
   if not LGC_CharacterDB then 
     LGC_CharacterDB = {}
   end
-
---[[
-  if not LGC_CharacterDB.rangeDamage then
-    LGC_CharacterDB.rangeDamage = {}
-  end
-
-  if not LGC_CharacterDB.spellDamage then
-    LGC_CharacterDB.spellDamage = {}
-  end
-
-  if not LGC_CharacterDB.critSpellDamage then
-    LGC_CharacterDB.critSpellDamage = {}
-  end
---]]
 end
 
 function clearCharacterStats()
