@@ -1,5 +1,5 @@
 ## Interface: 40892
-## Version: 0.0.3
+## Version: 0.0.4
 ## Title: Let's Get Critical
 ## Author: iachievedit
 ## Copyright:  The MIT License
