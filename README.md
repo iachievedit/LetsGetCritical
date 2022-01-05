@@ -31,6 +31,8 @@ Turn off the window.
 
 Turn on the window.
 
+To move the window click and hold the middle mouse button.
+
 `/lgc sounds off`
 
 Turn off all sounds.
