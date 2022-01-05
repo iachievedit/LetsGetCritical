@@ -54,10 +54,34 @@ local damageTypes = {
 --  }
 }
 
-SLASH_LGCRITICAL_STATS1 = "/lgcstats"
-SLASH_LGCRITICAL_CLEAR1 = "/lgcclear"
-SlashCmdList["LGCRITICAL_STATS"] = function(msg)
+-- type is (record, critical, criticalrecord)
+function playSound(type)
 
+  --print(type)
+  -- are sounds off?
+  if LGC_CharacterDB.sounds == "off" then
+    return
+  end
+
+  if type == "record" then
+    PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\Sweet.mp3")
+  elseif type == "critical" then
+    PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\Yo.mp3")
+  elseif type == "criticalrecord" then
+    PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\HotDamn.mp3")
+  end
+
+end
+
+-- Commands
+-- lgc clear
+-- lgc stats
+-- lgc sounds off|on|crit|record
+-- lgc window off|on
+
+SLASH_LGC1 = "/lgc"
+
+function displayStats() 
   for k,v in pairs(damageTypes) do
     damageTypeTitle = v.title
     damageFrame:AddMessage(damageTypeTitle, 1.0, 0.0, 0.0)
@@ -70,9 +94,29 @@ SlashCmdList["LGCRITICAL_STATS"] = function(msg)
   end
 end
 
-SlashCmdList["LGCRITICAL_CLEAR"] = function(msg)
-  print("Clearing character stats")
-  clearCharacterStats()
+SlashCmdList["LGC"] = function(msg)
+  if msg == 'stats' then
+    displayStats()
+  elseif msg == 'clear' then
+    clearCharacterStats()
+  else
+    print(msg)
+    local tbl = { strsplit(" ", msg) }
+    if tbl[1] == "window" then
+      if tbl[2] == "off" then
+        damageFrame:Hide()
+      else
+        damageFrame:Show()
+      end
+    elseif tbl[1] == "sounds" then
+      if tbl[2] == "off" then
+        LGC_CharacterDB.sounds = "off"
+      elseif tbl[2] == "on" then
+        LGC_CharacterDB.sounds = "on"
+      end
+    end
+  end
+  print(LGC_CharacterDB.sounds)
 end
 
 -- Indexes into CombatLog
@@ -114,39 +158,20 @@ damageFrame:SetHeight(120)
 damageFrame:SetWidth(240)
 damageFrame:SetMinResize(80,120)
 damageFrame:SetMaxResize(480,960)
-damageFrame:SetPoint("BOTTOMLEFT", UIParent, 0, 400)
+damageFrame:SetPoint("CENTER", UIParent, 0, 0)
 damageFrame:SetFontObject(GameFontNormal)
 damageFrame:SetTextColor(GameFontNormal:GetTextColor())
 damageFrame:SetMovable(true)
 damageFrame:EnableMouse(true)
 damageFrame:SetResizable(true)
-damageFrame:RegisterForDrag("LeftButton")
+damageFrame:RegisterForDrag("MiddleButton")
 damageFrame:SetInsertMode("TOP")
 damageFrame:SetScript("OnDragStart", function(self)
   self:StartMoving()
---  print(self:GetLeft())
 end)
 damageFrame:SetScript("OnDragStop", function(self)
   self:StopMovingOrSizing()
---  print(self:GetRight() - self:GetLeft())
 end)
-
---[[
-titleFrame = CreateFrame("Frame", nil, damageFrame)
-titleFrame:SetPoint("TOPLEFT")
-titleFrame:SetHeight(16)
-titleFrame:SetWidth(parentFrame:GetWidth())
-
-print(damageFrame:GetRight() - damageFrame:GetLeft())
-titleFrame.Title = titleFrame:CreateFontString(nil,"ARTWORK")
-titleFrame.Title:SetFont("GameFontNormal", 13, "OUTLINE")
-titleFrame.Title:SetPoint("CENTER", 0,0)
-titleFrame.Title:SetText("Let's Get Critical")
-titleFrame.texture = titleFrame:CreateTexture(nil, "BACKGROUND")
-titleFrame.texture:SetAllPoints()
-titleFrame.texture:SetColorTexture(0.0, 0.0, 0.0, 0.5)
-titleFrame:Show()
---]]
 
 damageFrame:Show()
 
@@ -182,11 +207,6 @@ local function eventHandler(self, event, ...)
       local critical     = eventInfo[CRITICAL]
       local spellName    = eventInfo[SPELL_NAME]
 
-      -- Sound rules
-      -- Yo! on any non-record crit
-      -- Alright on first record crit
-      -- Ooooh on new critical record
-
       -- Is this a crit?
       if (critical) then
 
@@ -196,7 +216,9 @@ local function eventHandler(self, event, ...)
         if not LGC_CharacterDB[critTableKey][spellName] then
           damageFrame:AddMessage("First critical record of "..damageAmount.." for "..spellName.."!")
           LGC_CharacterDB[critTableKey][spellName] = damageAmount
-          PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\HotDamn.mp3")
+
+          playSound("criticalrecord")
+
           return
         end
 
@@ -204,18 +226,22 @@ local function eventHandler(self, event, ...)
         if (damageAmount > LGC_CharacterDB[critTableKey][spellName]) then
           damageFrame:AddMessage("New critical record of "..damageAmount.." for "..spellName.."!")
           LGC_CharacterDB[critTableKey][spellName] = damageAmount
-          PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\HotDamn.mp3")
+
+          playSound("criticalrecord")
+
           return
         end
 
         -- Non-record crit
-        PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\Yo.mp3")
+        playSound("critical")
+
         damageFrame:AddMessage("Critical damage "..damageAmount.." for "..spellName.."!")
 
       else -- Not critical
         if not LGC_CharacterDB[type][spellName] then
           damageFrame:AddMessage("First damage record of "..damageAmount.." for "..spellName.."!")
           LGC_CharacterDB[type][spellName] = damageAmount
+          playSound("record")
           return
         end
 
@@ -223,7 +249,9 @@ local function eventHandler(self, event, ...)
         if damageAmount > LGC_CharacterDB[type][spellName] then
           damageFrame:AddMessage("New damage record of "..damageAmount.." for "..spellName.."!")
           LGC_CharacterDB[type][spellName] = damageAmount
-          PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\Sweet.mp3")
+
+          playSound("record")
+
         end
       end 
     end
@@ -232,5 +260,5 @@ end
 
 eventFrame:SetScript("OnEvent", eventHandler)
 
---damageFrame:AddMessage("Let's Go!", 1.0, 0.0, 0.0, 53, 5)
+
 

@@ -1,0 +1,8 @@
+The sounds included here are from the popular 1990s game Maelstrom for the
+Apple Macintosh.  I have used these sounds for reasons of pure nostalgia.
+
+The license under which I use these sounds is included in the source code for
+Maelstrom found at https://www.libsdl.org/projects/Maelstrom/source.html and is
+the Creative Commons Attribution 3.0 License found at
+https://creativecommons.org/licenses/by/3.0/legalcode.  I submit that this 
+license is compatible with the overall license of this code (MIT), but if there are any concerns or disagreements, please contact joe@iachieved.it.
