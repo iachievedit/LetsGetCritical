@@ -4,6 +4,10 @@ A replacement for CritLine.
 
 The whole point of this add-on is to keep tabs on your damage records.
 
+## Current Restrictions
+
+I play casters, so the focus is on spell damage.  I'll add melee eventually.
+
 ## Installing
 
 Unzip in `Interface/Addons/LetsGetCritical` and reload your UI (`/reload`).
