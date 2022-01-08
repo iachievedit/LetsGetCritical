@@ -116,7 +116,7 @@ SlashCmdList["LGC"] = function(msg)
       end
     end
   end
-  print(LGC_CharacterDB.sounds)
+  --print(LGC_CharacterDB.sounds)
 end
 
 -- Indexes into CombatLog
