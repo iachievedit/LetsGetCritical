@@ -56,8 +56,6 @@ local damageTypes = {
 
 -- type is (record, critical, criticalrecord)
 function playSound(type)
-
-  --print(type)
   -- are sounds off?
   if LGC_CharacterDB.sounds == "off" then
     return
@@ -76,7 +74,7 @@ end
 -- Commands
 -- lgc clear
 -- lgc stats
--- lgc sounds off|on|crit|record
+-- lgc sounds off|on
 -- lgc window off|on
 
 SLASH_LGC1 = "/lgc"
@@ -100,7 +98,6 @@ SlashCmdList["LGC"] = function(msg)
   elseif msg == 'clear' then
     clearCharacterStats()
   else
-    print(msg)
     local tbl = { strsplit(" ", msg) }
     if tbl[1] == "window" then
       if tbl[2] == "off" then
@@ -116,7 +113,6 @@ SlashCmdList["LGC"] = function(msg)
       end
     end
   end
-  --print(LGC_CharacterDB.sounds)
 end
 
 -- Indexes into CombatLog
