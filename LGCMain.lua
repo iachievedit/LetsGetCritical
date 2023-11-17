@@ -27,7 +27,7 @@ local addonName, addon = ...
 local LGCritical = addon
 
 local module = {}
-local moduleName = "Main"
+local moduleName = "LGCMain"
 LGCritical[moduleName] = module
 
 -- Imports
@@ -152,8 +152,8 @@ tex:SetColorTexture(0.1, 0.1, 0.1, 0.3)
 
 damageFrame:SetHeight(120)
 damageFrame:SetWidth(240)
-damageFrame:SetMinResize(80,120)
-damageFrame:SetMaxResize(480,960)
+--damageFrame:SetMinResize(80,120)
+--damageFrame:SetMaxResize(480,960)
 damageFrame:SetPoint("CENTER", UIParent, 0, 0)
 damageFrame:SetFontObject(GameFontNormal)
 damageFrame:SetTextColor(GameFontNormal:GetTextColor())

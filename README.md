@@ -6,8 +6,8 @@ The whole point of this add-on is to keep tabs on your damage records.
 
 ## Current Restrictions
 
-* Tested _only_ on Burning Crusade Classic.
-* I play casters, so the focus is on spell damage.  I'll add melee eventually.
+* Tested _only_ on Wrath of the Lich King Classic.
+* I play casters, so the focus is on spell damage.
 
 ## Installing
 
