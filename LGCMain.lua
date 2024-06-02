@@ -1,7 +1,7 @@
 --[[
   Let's Get Critical
 
-  Copyright 2021 iAchieved.it LLC
+  Copyright 2024 iAchieved.it LLC
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -49,18 +49,21 @@ local damageTypes = {
   SPELL_PERIODIC_DAMAGE = {
     title = "Periodic Spell Damage"
   },
---  PERIODIC_SPELL_DAMAGE_CRITICAL = {
---    title = "Critical Periodic Spell Damage"
---  }
+  PERIODIC_SPELL_DAMAGE_CRITICAL = {
+    title = "Critical Periodic Spell Damage"
+  }
 }
 
 -- type is (record, critical, criticalrecord)
 function playSound(type)
-  -- are sounds off?
+
+  -- Are sounds off?
   if LGC_CharacterDB.sounds == "off" then
+    -- If so, do nothing
     return
   end
 
+  -- If not, play the appropriate sound
   if type == "record" then
     PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\Sweet.mp3")
   elseif type == "critical" then
@@ -126,12 +129,33 @@ local CRITICAL      = 21
 -- Only for events
 local eventFrame = CreateFrame("Frame", "LGC_Frame")
 
+local width = 240
+local height = 120
+local titleBarHeight = 20
+
+
 -- Parent frame
 parentFrame = CreateFrame("Frame", nil, UIParent)
-parentFrame:SetSize(120,240)
+parentFrame:SetSize(width,height)
 
 -- This needs to be global
 damageFrame = CreateFrame("ScrollingMessageFrame", "LGC_Message_Frame", parentFrame)
+
+-- Create the title bar font string
+local titleBar = damageFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+titleBar:SetText("Let's Get Critical")
+titleBar:SetPoint("TOP", damageFrame, "TOP", 0, -5)
+
+-- Create a child frame for the actual messages
+--messageContainer = CreateFrame("ScrollingMessageFrame", "nil", damageFrame)
+--messageContainer:SetSize(width, height - titleBarHeight) -- Adjust the height to account for the title bar
+--messageContainer:SetPoint("TOP", damageFrame, "TOP", 0, -titleBarHeight)
+
+-- Apply the insets to the damageFrame
+--damageFrame:SetClipsChildren(true) -- This ensures content doesn't overflow
+--damageFrame:SetClampRectInsets(insetLeft, insetRight, insetTop, insetBottom)
+
+-- Create button frame for resizing
 br = CreateFrame("Button", nil, damageFrame)
 br:EnableMouse(true)
 br:SetPoint("BOTTOMRIGHT")
@@ -146,14 +170,14 @@ br:SetScript("OnMouseUp", function(self)
   self:GetParent():StopMovingOrSizing()
 end)
 
-local tex = damageFrame:CreateTexture(nil, "BACKGROUND")
+
+
+local tex = damageFrame:CreateTexture(nil, "ARTWORK")
 tex:SetAllPoints()
 tex:SetColorTexture(0.1, 0.1, 0.1, 0.3)
 
 damageFrame:SetHeight(120)
 damageFrame:SetWidth(240)
---damageFrame:SetMinResize(80,120)
---damageFrame:SetMaxResize(480,960)
 damageFrame:SetPoint("CENTER", UIParent, 0, 0)
 damageFrame:SetFontObject(GameFontNormal)
 damageFrame:SetTextColor(GameFontNormal:GetTextColor())

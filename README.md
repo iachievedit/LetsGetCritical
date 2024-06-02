@@ -7,11 +7,15 @@ The whole point of this add-on is to keep tabs on your damage records.
 ## Current Restrictions
 
 * Tested _only_ on Wrath of the Lich King Classic.
-* I play casters, so the focus is on spell damage.
+* I play casters, so the focus is on spell damage, but have recently taken up a DPS warrior, and it seems to work well there too.
 
 ## Installing
 
 Unzip in `Interface/Addons/LetsGetCritical` and reload your UI (`/reload`).
+
+## Moving the Window
+
+You can move the LetsGetCritical window around by clicking the middle button while the window is under your cursor.
 
 ## Commands
 
