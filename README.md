@@ -2,12 +2,14 @@
 
 A replacement for CritLine.
 
-The whole point of this add-on is to keep tabs on your damage records.
+The point of this add-on is to keep tabs on your damage records and
+play sounds that make me smile when I crit.  Hot damn.  🔥
 
 ## Current Restrictions
 
-* Tested _only_ on Wrath of the Lich King Classic.
-* I play casters, so the focus is on spell damage, but have recently taken up a DPS warrior, and it seems to work well there too.
+
+* Tested on Classic (up to and including Catacylsm) and Season of Discovery.
+* I play casters, so the focus is on spell damage.
 
 ## Installing
 
@@ -15,7 +17,8 @@ Unzip in `Interface/Addons/LetsGetCritical` and reload your UI (`/reload`).
 
 ## Moving the Window
 
-You can move the LetsGetCritical window around by clicking the middle button while the window is under your cursor.
+You can move the LetsGetCritical window around by clicking the middle button
+while the window is under your cursor.
 
 ## Commands
 
@@ -25,7 +28,9 @@ Display your current damage stats.
 
 `/lgc clear`
 
-Clear your current character's damage stats.  **WARNING**:  You won't be asked "Are you sure?" before the stats are cleared.  Then again, you can run out and kill stuff to repopulate your records.
+Clear your current character's damage stats.  **WARNING**:  You won't be
+asked "Are you sure?" before the stats are cleared.  Then again, you can run 
+out and kill stuff to repopulate your records.
 
 `/lgc window off`
 
