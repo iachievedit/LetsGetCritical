@@ -2,12 +2,13 @@
 
 A replacement for CritLine.
 
-The whole point of this add-on is to keep tabs on your damage records.
+The point of this add-on is to keep tabs on your damage records and
+play sounds that make me smile when I crit.  Hot damn.  🔥
 
 ## Current Restrictions
 
-* Tested _only_ on Burning Crusade Classic.
-* I play casters, so the focus is on spell damage.  I'll add melee eventually.
+* Tested on Classic (up to and including Catacylsm) and Season of Discovery.
+* I play casters, so the focus is on spell damage.
 
 ## Installing
 
