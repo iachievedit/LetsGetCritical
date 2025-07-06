@@ -50,6 +50,10 @@ Turn off all sounds.
 
 Turn on all sounds.
 
+`/lgc clips`
+
+Open a window for selecting the sound clip that plays for each event.
+
 ## License
 
 MIT
