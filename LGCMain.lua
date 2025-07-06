@@ -63,13 +63,15 @@ function playSound(type)
     return
   end
 
-  -- If not, play the appropriate sound
-  if type == "record" then
-    PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\Sweet.mp3")
-  elseif type == "critical" then
-    PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\Yo.mp3")
-  elseif type == "criticalrecord" then
-    PlaySoundFile("Interface\\AddOns\\LetsGetCritical\\Sounds\\HotDamn.mp3")
+  -- Determine which clip to play
+  local file = nil
+  if LGC_CharacterDB.soundPreferences and LGC_CharacterDB.soundPreferences[type] then
+    file = LGC_CharacterDB.soundPreferences[type]
+  end
+
+  if file then
+    local path = "Interface\\AddOns\\LetsGetCritical\\Sounds\\" .. file
+    PlaySoundFile(path)
   end
 
 end
@@ -114,6 +116,8 @@ SlashCmdList["LGC"] = function(msg)
       elseif tbl[2] == "on" then
         LGC_CharacterDB.sounds = "on"
       end
+    elseif tbl[1] == "clips" then
+      toggleSoundFrame()
     end
   end
 end
@@ -194,6 +198,57 @@ damageFrame:SetScript("OnDragStop", function(self)
 end)
 
 damageFrame:Show()
+
+-- Frame for selecting sounds
+local soundFrame = CreateFrame("Frame", "LGC_SoundFrame", UIParent, "BasicFrameTemplateWithInset")
+soundFrame:SetSize(260, 180)
+soundFrame:SetPoint("CENTER")
+soundFrame:Hide()
+
+soundFrame.title = soundFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+soundFrame.title:SetPoint("CENTER", soundFrame.TitleBg, "CENTER", 0, 0)
+soundFrame.title:SetText("Select Clips")
+
+local soundOptions = {"Explosion.mp3", "HotDamn.mp3", "Sweet.mp3", "Yo.mp3"}
+local dropDowns = {}
+
+local function createDropDown(labelText, soundType, yOffset)
+  local dd = CreateFrame("Frame", "LGC_DropDown_"..soundType, soundFrame, "UIDropDownMenuTemplate")
+  dd:SetPoint("TOPLEFT", 20, yOffset)
+  UIDropDownMenu_SetWidth(dd, 120)
+
+  local label = soundFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  label:SetPoint("LEFT", dd, "RIGHT", -10, 2)
+  label:SetText(labelText)
+
+  UIDropDownMenu_Initialize(dd, function(self, level, menuList)
+    local info = UIDropDownMenu_CreateInfo()
+    for _, file in ipairs(soundOptions) do
+      info.text = file
+      info.value = file
+      info.func = function(self)
+        UIDropDownMenu_SetSelectedValue(dd, self.value)
+        LGC_CharacterDB.soundPreferences[soundType] = self.value
+      end
+      UIDropDownMenu_AddButton(info)
+    end
+  end)
+
+  UIDropDownMenu_SetSelectedValue(dd, LGC_CharacterDB.soundPreferences[soundType])
+  dropDowns[soundType] = dd
+end
+
+createDropDown("Record", "record", -40)
+createDropDown("Critical", "critical", -80)
+createDropDown("Critical Record", "criticalrecord", -120)
+
+local function toggleSoundFrame()
+  if soundFrame:IsShown() then
+    soundFrame:Hide()
+  else
+    soundFrame:Show()
+  end
+end
 
 local playerGUID = UnitGUID("player")
 

@@ -25,14 +25,26 @@ function LGCritical:PLAYER_LOGIN()
 end
 
 function LGCritical:SetDefaults()
-  if not LGC_AccountDB then 
-  	LGC_AccountDB = {
+  if not LGC_AccountDB then
+        LGC_AccountDB = {
       loginCount = 0
     }
   end
 
-  if not LGC_CharacterDB then 
+  if not LGC_CharacterDB then
     LGC_CharacterDB = {}
+  end
+
+  if not LGC_CharacterDB.sounds then
+    LGC_CharacterDB.sounds = "on"
+  end
+
+  if not LGC_CharacterDB.soundPreferences then
+    LGC_CharacterDB.soundPreferences = {
+      record = "Sweet.mp3",
+      critical = "Yo.mp3",
+      criticalrecord = "HotDamn.mp3",
+    }
   end
 end
 
